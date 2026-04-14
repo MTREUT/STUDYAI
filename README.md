@@ -9,4 +9,3 @@ VIDEO PRESENTATION :
 
 <img width="1873" height="950" alt="PORTFOLIO PHOTO 1" src="https://github.com/user-attachments/assets/9fe7f493-7bfe-4f3c-b776-6bb38b384a22" />
 
-[![Voir la vidéo](https://img.youtube.com/vi/YgWtwf9zBSA/0.jpg)](https://www.youtube.com/watch?v=YgWtwf9zBSA) 
