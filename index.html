@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyAI Pro - BTS SIO Edition</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-[#f8fafc] min-h-screen flex text-slate-900">
+
+    <!--MOBILE MENU BUTTON-->
+    <button onclick="toggleSidebar(true)"
+            class="md:hidden fixed bottom-6 right-6 z-[60] bg-indigo-600 text-white p-4 rounded-full shadow-2xl active:scale-90 transition-transform">
+        <i data-lucide="menu" class="w-6 h-6"></i>
+    </button>
+
+    <!-- Overlay -->
+    <div id="mobile-overlay"
+         onclick="toggleSidebar(false)"
+         class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-40 md:hidden opacity-0"></div>
+
+    <!--SIDEBAR-->
+    <aside id="sidebar"
+           class="w-72 bg-white border-r border-slate-200 fixed inset-y-0 left-0 -translate-x-full md:translate-x-0 md:static flex flex-col z-50">
+
+        <!-- Logo -->
+        <div class="p-8 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="bg-indigo-600 p-2.5 rounded-xl text-white shadow-lg shadow-indigo-200">
+                    <i data-lucide="graduation-cap" class="w-6 h-6"></i>
+                </div>
+                <h1 class="text-2xl font-black tracking-tighter text-slate-800">
+                    Study<span class="text-indigo-600">SIO</span>
+                </h1>
+            </div>
+            <button onclick="toggleSidebar(false)" class="md:hidden text-slate-400">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="flex-1 px-4 space-y-1 overflow-y-auto no-scrollbar">
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] px-4 mb-3">Navigation</p>
+
+            <button onclick="showView('editor')" id="nav-editor"
+                    class="sidebar-item active w-full flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all mb-1 text-slate-600">
+                <i data-lucide="plus-circle" class="w-5 h-5"></i> Nouveau
+            </button>
+
+            <button onclick="showView('library')" id="nav-library"
+                    class="sidebar-item w-full flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold text-slate-600 hover:bg-slate-50 transition-all">
+                <i data-lucide="library" class="w-5 h-5"></i> Ma Bibliothèque
+            </button>
+
+            <!-- Subject Filter -->
+            <div class="pt-8 pb-4">
+                <div class="flex items-center justify-between px-4 mb-3">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Filtre Matières</p>
+                    <button onclick="filterBySubject(null)"
+                            class="text-[9px] font-bold text-indigo-500 hover:underline uppercase">Toutes</button>
+                </div>
+                <div id="subject-list" class="space-y-0.5"></div>
+            </div>
+        </nav>
+
+        <!-- User Card -->
+        <div class="p-6 border-t border-slate-100 mt-auto">
+            <div class="bg-slate-50 p-4 rounded-2xl flex items-center gap-3 border border-slate-100">
+                <div class="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold shrink-0">SIO</div>
+                <div class="overflow-hidden">
+                    <p class="font-bold text-slate-800 text-sm truncate">Étudiant SIO</p>
+                    <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Session 2026</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 flex flex-col h-screen overflow-hidden relative">
+
+        <!-- Top Nav (Viewer Mode) -->
+        <div id="top-nav"
+             class="hidden h-16 bg-white/90 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-4 md:px-8 sticky top-0 z-40">
+            <button onclick="showView('library')"
+                    class="flex items-center gap-2 text-xs md:text-sm font-bold text-slate-600 hover:text-indigo-600 transition-colors">
+                <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                <span class="hidden sm:inline">Bibliothèque</span>
+                <span class="sm:hidden">Retour</span>
+            </button>
+            <button onclick="saveToLibrary()"
+                    class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-xs font-bold shadow-md hover:bg-indigo-700">
+                Sauvegarder la fiche
+            </button>
+        </div>
+
+        <!--  EDITOR VIEW  -->
+        <section id="view-editor" class="flex-1 overflow-y-auto p-4 md:p-12 animate-fade">
+            <div class="max-w-4xl mx-auto space-y-8">
+
+                <div class="space-y-2">
+                    <h2 class="text-3xl md:text-4xl font-black text-slate-900 tracking-tight text-center md:text-left">
+                        Nouvelle Fiche
+                    </h2>
+                    <p class="text-slate-500 text-base md:text-lg text-center md:text-left">
+                        Synthèse SIO et Quiz Interactif de 20 questions.
+                    </p>
+                </div>
+
+                <div class="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-slate-200">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+                        <!-- Left: Subject / Title / Button -->
+                        <div class="space-y-6">
+                            <div>
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 block text-center md:text-left">
+                                    Matière
+                                </label>
+                                <select id="subjectSelect"
+                                        class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-5 py-4 font-bold text-slate-700 focus:border-indigo-500 transition-all appearance-none outline-none text-sm md:text-base">
+                                    <option value="Bloc 1">Support Services (B1)</option>
+                                    <option value="SISR">Réseaux &amp; Systèmes (B2)</option>
+                                    <option value="SLAM">Développement (B2)</option>
+                                    <option value="Cyber">Cybersécurité (B3)</option>
+                                    <option value="Maths">Mathématiques Info</option>
+                                    <option value="CEJM">CEJM</option>
+                                    <option value="CGE">Culture Générale (CGE)</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 block text-center md:text-left">
+                                    Titre du chapitre
+                                </label>
+                                <input type="text" id="chapterTitle"
+                                       placeholder="Ex: Adressage IP, Hooks React..."
+                                       class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-5 py-4 font-bold text-slate-700 focus:border-indigo-500 transition-all outline-none text-sm md:text-base">
+                            </div>
+
+                            <button id="generateBtn" disabled onclick="processAI()"
+                                    class="w-full bg-indigo-600 text-white py-4 md:py-5 rounded-2xl font-black text-base md:text-lg flex items-center justify-center gap-3 disabled:opacity-30 hover:bg-indigo-700 shadow-xl active:scale-95 transition-all">
+                                <i data-lucide="wand-2" class="w-5 h-5 md:w-6 md:h-6"></i> ANALYSER &amp; GÉNÉRER
+                            </button>
+                        </div>
+
+                        <!-- Right: File Upload -->
+                        <div class="space-y-4">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 block text-center md:text-left">
+                                Support de cours
+                            </label>
+
+                            <div id="dropZone"
+                                 class="border-2 border-dashed border-slate-200 rounded-3xl p-6 md:p-10 text-center hover:border-indigo-400 hover:bg-indigo-50 transition-all cursor-pointer group flex flex-col items-center justify-center min-h-[160px] md:min-h-[220px] gap-4">
+                                <input type="file" id="fileInput" class="hidden" accept="image/*,application/pdf">
+                                <i data-lucide="file-up" class="w-10 h-10 text-slate-300 group-hover:text-indigo-600 transition-all"></i>
+                                <div>
+                                    <p class="font-bold text-slate-700 text-sm">Importer (PDF/Image)</p>
+                                    <p class="text-[10px] text-slate-400 mt-1 uppercase">Max 10MB</p>
+                                </div>
+                            </div>
+
+                            <div id="filePreview"
+                                 class="hidden p-4 bg-indigo-50 rounded-2xl border border-indigo-100 flex items-center justify-between animate-fade">
+                                <div class="flex items-center gap-3 overflow-hidden">
+                                    <div class="bg-indigo-600 p-2 rounded-lg text-white">
+                                        <i data-lucide="check" class="w-4 h-4"></i>
+                                    </div>
+                                    <span id="fileNameDisplay" class="text-sm font-bold text-indigo-900 truncate tracking-tight">Prêt</span>
+                                </div>
+                                <button onclick="clearFile()" class="text-indigo-300 hover:text-red-500">
+                                    <i data-lucide="x" class="w-5 h-5"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Loading Indicator -->
+                <div id="result-loading"
+                     class="hidden bg-white rounded-3xl p-10 md:p-16 text-center flex flex-col items-center justify-center border-2 border-dashed border-indigo-100">
+                    <div class="animate-spin text-indigo-600 mb-6">
+                        <i data-lucide="refresh-cw" class="w-10 h-10 md:w-12 md:h-12"></i>
+                    </div>
+                    <h3 class="text-xl md:text-2xl font-black mb-2 tracking-tight">Analyse en cours...</h3>
+                    <p class="text-slate-500 text-sm md:text-base">Génération du résumé, glossaire et des 20 questions de quiz.</p>
+                </div>
+            </div>
+        </section>
+
+        <!--  LIBRARY VIEW  -->
+        <section id="view-library" class="hidden flex-1 overflow-y-auto p-4 md:p-12 animate-fade">
+            <div class="max-w-6xl mx-auto space-y-8">
+                <div class="space-y-2">
+                    <h2 class="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">Ma Bibliothèque</h2>
+                    <p id="library-status" class="text-slate-500 text-lg">Vos ressources SIO enregistrées.</p>
+                </div>
+                <div id="library-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pb-24 md:pb-0"></div>
+            </div>
+        </section>
+
+        <!--  VIEWER VIEW  -->
+        <section id="view-viewer" class="hidden flex-1 overflow-y-auto p-4 md:p-12 bg-slate-50 animate-fade">
+            <div class="sheet-container">
+
+                <!-- Header -->
+                <div class="mb-8 border-b-4 border-indigo-600 pb-6 relative">
+                    <div id="viewer-subject"
+                         class="bg-indigo-600 text-white px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest inline-block mb-3">
+                        MATIÈRE
+                    </div>
+                    <h1 id="viewer-title" class="text-2xl md:text-4xl font-black text-slate-900 leading-tight tracking-tight">Titre</h1>
+                    <p id="viewer-date" class="text-[10px] font-bold text-slate-400 mt-2 uppercase tracking-widest italic tracking-tight">Date</p>
+                </div>
+
+                <!-- Tab Switcher -->
+                <div class="flex flex-wrap gap-2 mb-8 bg-slate-100 p-1.5 rounded-2xl">
+                    <button onclick="showViewerTab('sheet')" id="tab-sheet-btn"
+                            class="flex-1 min-w-[120px] py-2.5 rounded-xl text-xs font-black transition-all bg-white shadow-sm text-indigo-600 uppercase">
+                        Cours &amp; Glossaire
+                    </button>
+                    <button onclick="showViewerTab('quiz')" id="tab-quiz-btn"
+                            class="flex-1 min-w-[120px] py-2.5 rounded-xl text-xs font-black transition-all text-slate-500 uppercase">
+                        Quiz Interactif
+                    </button>
+                </div>
+
+                <!-- Sheet Content -->
+                <div id="viewer-content-sheet" class="markdown-content animate-fade space-y-12">
+                    <div id="sheet-summary-box"></div>
+                    <div id="sheet-definitions-box"></div>
+                    <div id="sheet-content-box"></div>
+                </div>
+
+                <!-- Quiz Content -->
+                <div id="viewer-content-quiz" class="hidden animate-fade pb-10 space-y-6">
+                    <!-- Progress -->
+                    <div class="bg-slate-50 rounded-2xl p-4 flex flex-col gap-3">
+                        <div class="flex justify-between items-center text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                            <span>Progression</span>
+                            <span id="quiz-counter">Question 1 / 20</span>
+                        </div>
+                        <div class="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
+                            <div id="quiz-progress-bar" class="h-full bg-indigo-600 progress-bar-inner" style="width: 5%"></div>
+                        </div>
+                    </div>
+                    <!-- Question Card (dynamic) -->
+                    <div id="quiz-question-card"
+                         class="bg-white rounded-3xl border-2 border-slate-100 p-6 md:p-8 space-y-8 shadow-sm">
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <!-- 
+          NOTIFICATION
+     -->
+    <div id="toast"
+         class="fixed bottom-24 md:bottom-10 left-1/2 -translate-x-1/2 md:left-auto md:right-10 md:translate-x-0 bg-slate-900 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-4 translate-y-20 opacity-0 pointer-events-none transition-all duration-300 z-[100]">
+        <div id="toast-icon-box" class="bg-indigo-500 p-1 rounded-lg shrink-0">
+            <i data-lucide="check" class="w-4 h-4 text-white"></i>
+        </div>
+        <span id="toastMsg" class="font-bold text-sm">Message</span>
+    </div>
+
+    <!--  JavaScript -->
+    <script src="app.js"></script>
+</body>
+</html>
