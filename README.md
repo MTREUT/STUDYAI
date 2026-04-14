@@ -5,7 +5,5 @@ L’objectif est simple : transformer n’importe quel support de cours en un ou
 
 Grâce à l’intelligence artificielle, StudySIO fait gagner du temps et rend les révisions plus efficaces et motivantes.
 
-VIDEO PRESENTATION : 
-
 <img width="1873" height="950" alt="PORTFOLIO PHOTO 1" src="https://github.com/user-attachments/assets/9fe7f493-7bfe-4f3c-b776-6bb38b384a22" />
 
